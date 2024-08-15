@@ -13,4 +13,4 @@ start:
 	docker compose up -d
 
 run-count:
-	docker exec -it app-test-drom-1 php src/main.php
+	docker exec -it app-test-drom-1 php src/main.php --use-config

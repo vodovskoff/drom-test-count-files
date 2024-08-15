@@ -4,18 +4,45 @@ declare(strict_types=1);
 
 $configFilePath = dirname(__DIR__).'/config.json';
 
-$configString = file_get_contents($configFilePath);
-if (false === $configString) {
-    throw new Exception('Cannot read config file');
-}
+$options = getopt('', [
+    'delimiter::',
+    'directories::',
+    'use-config',
+]);
 
-$config = json_decode(file_get_contents($configFilePath), true, JSON_THROW_ON_ERROR);
-if (!isset($config['directories']) || !is_array($config['directories'])) {
-    throw new Exception('Invalid config file');
+if (!isset($options['use-config'])) {
+    if (!isset($options['directories'])) {
+        echo "Specify --directories, e.g --directories='[\"./example-dir\"]'\n";
+
+        return -1;
+    }
+    if (!isset($options['delimiter'])) {
+        echo "Specify --delimiter, e.g --delimiter=' '\n";
+
+        return -1;
+    }
+    $config = [
+        'directories' => json_decode($options['directories'], true, JSON_THROW_ON_ERROR),
+        'delimiter' => $options['delimiter'],
+    ];
+} else {
+    $configString = file_get_contents($configFilePath);
+    if (false === $configString) {
+        echo "Cannot read config file\n";
+
+        return -1;
+    }
+
+    $config = json_decode(file_get_contents($configFilePath), true, JSON_THROW_ON_ERROR);
+    if (!isset($config['directories'], $config['delimiter']) || !is_array($config['directories'])) {
+        echo "Invalid config file\n";
+
+        return -1;
+    }
 }
 
 $totalSum = 0;
-$delimiter = $config['delimiter'] ?? ' ';
+$delimiter = $config['delimiter'];
 $visitedPaths = [];
 
 foreach (array_unique($config['directories']) as $directory) {

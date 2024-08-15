@@ -21,10 +21,18 @@ make create
 make start
 ```
 
-### 3. Fill config.json
-Specify the directories you want to traverse in the `config.json` and delimiter for numbers in files
-
-### 4. Run the script
+### 3. Run the script
+To run using config.json, specify the directories you want to traverse in the `config.json` and delimiter for numbers in files and run
 ```bash
 make run-count
+```
+or 
+```bash
+docker exec -it app-test-drom-1 php src/main.php --use-config
+```
+<br>
+
+To run using stdin, specify the options in the command line and run, e.g.
+```bash
+docker exec -it app-test-drom-1 php src/main.php --delimiter=' ' --directories='["./example-dir"]'
 ```
